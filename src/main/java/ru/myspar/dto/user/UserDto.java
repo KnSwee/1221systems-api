@@ -10,14 +10,14 @@ import ru.myspar.enums.Goal;
 @AllArgsConstructor
 public class UserDto {
 
-    private int id;
+    private Integer id;
     private String name;
     private String email;
     private int age;
     private double weight;
     private double height;
     private String gender;
-    private Goal goal;
+    private String goal;
     private double DailyCaloriesNorm;
 
 }

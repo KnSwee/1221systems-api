@@ -20,13 +20,13 @@ CREATE TABLE IF NOT EXISTS dishes (
 
 CREATE TABLE IF NOT EXISTS meals (
                        id SERIAL PRIMARY KEY,
-                       user_id INTEGER REFERENCES Users(id),
+                       user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
                        meal_datetime TIMESTAMP
 );
 
 CREATE TABLE IF NOT EXISTS meal_dishes (
-                             meal_id INTEGER REFERENCES Meals(id),
-                             dish_id INTEGER REFERENCES Dishes(id),
+                             meal_id INTEGER REFERENCES meals(id) ON DELETE CASCADE,
+                             dish_id INTEGER REFERENCES dishes(id) ON DELETE CASCADE,
                              quantity INTEGER,
                              PRIMARY KEY (meal_id, dish_id)
 );
