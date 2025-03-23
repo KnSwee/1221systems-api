@@ -6,6 +6,7 @@ CREATE TABLE IF NOT EXISTS users (
                        weight DECIMAL,
                        height DECIMAL,
                        goal VARCHAR(20),
+                       gender VARCHAR(20),
                        daily_calories_norm INTEGER
 );
 

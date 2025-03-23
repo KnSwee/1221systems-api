@@ -1,0 +1,28 @@
+services:
+  app:
+    build: ./
+    image: 1221systems-app
+    container_name: 1221systems-app
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/1221systems
+      - SPRING_DATASOURCE_USERNAME=user
+      - SPRING_DATASOURCE_PASSWORD=systems
+
+  db:
+    image: postgres:16.1
+    container_name: systems_db
+    ports:
+      - "6541:5432"
+    environment:
+      - POSTGRES_PASSWORD=systems
+      - POSTGRES_USER=user
+      - POSTGRES_DB=1221systems
+    healthcheck:
+      test: pg_isready -q -d $$POSTGRES_DB -U $$POSTGRES_USER
+      timeout: 5s
+      interval: 5s
+      retries: 10

@@ -3,6 +3,7 @@ package ru.myspar.controller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.myspar.dto.meal.MealCreationDto;
 import ru.myspar.dto.meal.MealDto;
@@ -18,24 +19,26 @@ public class MealController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
-    public MealDto createMeal(@Valid @RequestBody MealCreationDto mealCreationDto,
-                              @RequestHeader("X-User-Id") Integer userId) {
-        return mealService.createMeal(mealCreationDto, userId);
+    public ResponseEntity<MealDto> createMeal(@Valid @RequestBody MealCreationDto mealCreationDto) {
+        MealDto meal = mealService.createMeal(mealCreationDto);
+        return new ResponseEntity<>(meal, HttpStatus.CREATED);
     }
 
     @GetMapping
-    public List<MealDto> getMealsByUserId(@RequestHeader("X-User-Id") Integer userId) {
-        return mealService.getMealsById(userId);
+    public ResponseEntity<List<MealDto>> getMealsByUserId(@RequestHeader("X-User-Id") Integer userId) {
+        List<MealDto> mealsByUserId = mealService.getMealsByUserId(userId);
+        return new ResponseEntity<>(mealsByUserId, HttpStatus.OK);
     }
 
-    @GetMapping("/meals/{mealId}")
-    public MealDto getMealById(@PathVariable(name = "mealId") Integer mealId) {
-        return mealService.getMealById(mealId);
+    @GetMapping("/{mealId}")
+    public ResponseEntity<MealDto> getMealById(@PathVariable(name = "mealId") Integer mealId) {
+        MealDto mealById = mealService.getMealById(mealId);
+        return new ResponseEntity<>(mealById, HttpStatus.OK);
     }
 
-    @DeleteMapping("/meals/{mealId}")
-    public boolean deleteMealById(@PathVariable(name = "mealId") Integer mealId) {
-        return mealService.deleteMealById(mealId);
+    @DeleteMapping("{mealId}")
+    public ResponseEntity<Void> deleteMealById(@PathVariable(name = "mealId") Integer mealId) {
+        mealService.deleteMealById(mealId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
-
 }

@@ -34,16 +34,15 @@ public class UserDtoMapper {
         return userDtos;
     }
 
-    public static User toUser(UserCreationDto userDto) {
+    public static User toUser(UserCreationDto userCreationDto) {
         User user = new User();
-        user.setName(userDto.getName());
-        user.setEmail(userDto.getEmail());
-        user.setAge(userDto.getAge());
-        user.setHeight(userDto.getHeight());
-        user.setWeight(userDto.getWeight());
-        user.setGender(userDto.getGenderEnum());
-        user.setGoal(userDto.getGoalEnum());
-        user.setDailyCaloriesNorm(user.getDailyCaloriesNorm());
+        user.setName(userCreationDto.getName());
+        user.setEmail(userCreationDto.getEmail());
+        user.setAge(userCreationDto.getAge());
+        user.setHeight(userCreationDto.getHeight());
+        user.setWeight(userCreationDto.getWeight());
+        user.setGender(userCreationDto.getGender());
+        user.setGoal(userCreationDto.getGoal());
         return user;
     }
 }

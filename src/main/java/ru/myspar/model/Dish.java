@@ -31,5 +31,3 @@ public class Dish {
     @Column(name = "carbohydrates")
     private double carbohydrates;
 }
-
-

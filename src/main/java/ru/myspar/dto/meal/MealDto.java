@@ -15,6 +15,8 @@ public class MealDto {
 
     private Integer id;
 
+    private Integer userId;
+
     private LocalDateTime mealDateTime;
 
     private List<DishDto> dishes;

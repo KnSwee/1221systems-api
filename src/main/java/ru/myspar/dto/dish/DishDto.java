@@ -8,16 +8,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class DishDto {
-
     private Integer id;
-
     private String name;
-
     private int calories;
-
     private double proteins;
-
     private double fats;
-
     private double carbohydrates;
 }

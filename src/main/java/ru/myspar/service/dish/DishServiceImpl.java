@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.myspar.dto.dish.DishCreationDto;
 import ru.myspar.dto.dish.DishDto;
+import ru.myspar.exception.NotFoundException;
 import ru.myspar.model.Dish;
 import ru.myspar.repository.DishRepository;
 
@@ -28,11 +29,16 @@ public class DishServiceImpl implements DishService {
     }
 
     @Override
-    public boolean deleteDish(int id) {
+    public DishDto getDishById(int id) {
+        Dish dish = dishRepository.findById(id).orElseThrow(() -> new NotFoundException("Блюда с id " + id + "не существует"));
+        return DishDtoMapper.toDishDto(dish);
+    }
+
+    @Override
+    public void deleteDish(int id) {
         if (!dishRepository.existsById(id)) {
-            return false;
+            throw new NotFoundException("Блюдо с id: " + id + " не найдено.");
         }
         dishRepository.deleteById(id);
-        return !dishRepository.existsById(id);
     }
 }

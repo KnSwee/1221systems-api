@@ -7,8 +7,6 @@ import lombok.NoArgsConstructor;
 import ru.myspar.enums.Gender;
 import ru.myspar.enums.Goal;
 
-import java.util.Arrays;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -19,7 +17,7 @@ public class UserCreationDto {
     private String name;
 
     @NotBlank(message = "Эл. почта не может быть пустой.")
-    @Email
+    @Email(message = "Email введен некорректно.")
     private String email;
 
     @NotNull
@@ -28,36 +26,18 @@ public class UserCreationDto {
     private Integer age;
 
     @NotNull
-    @DecimalMax(value = "251.0", message = "Рост не может быть больше 251 см.")
-    @DecimalMin(value = "50.0", message = "Рост не может быть меньше 62,8 см.")
-    private Double height;
-
-    @NotNull
     @DecimalMax(value = "600.0", message = "Вес не может быть больше 600 кг.")
     @DecimalMin(value = "20.0", message = "Вес не может быть меньше 20 кг.")
     private Double weight;
 
-    @NotBlank(message = "Пол не может быть пустым.")
-    private String gender;
+    @NotNull
+    @DecimalMax(value = "251.0", message = "Рост не может быть больше 251 см.")
+    @DecimalMin(value = "50.0", message = "Рост не может быть меньше 62,8 см.")
+    private Double height;
 
-    @NotBlank(message = "Цель не может быть пустой.")
-    private String goal;
+    @NotNull(message = "Пол не может быть пустым.")
+    private Gender gender;
 
-    public Gender getGenderEnum() {
-        try {
-            return Gender.valueOf(gender.toUpperCase());
-        } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("Недопустимое значение для пола: " + gender +
-                    ". Допустимые значения: " + Arrays.toString(Gender.values()));
-        }
-    }
-
-    public Goal getGoalEnum() {
-        try {
-            return Goal.valueOf(goal.toUpperCase());
-        } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("Недопустимое значение для цели: " + goal +
-                    ". Допустимые значения: " + Arrays.toString(Goal.values()));
-        }
-    }
+    @NotNull(message = "Цель не может быть пустой.")
+    private Goal goal;
 }

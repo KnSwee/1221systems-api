@@ -5,13 +5,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.myspar.dto.user.UserCreationDto;
 import ru.myspar.dto.user.UserDto;
-import ru.myspar.exceptions.NotFoundException;
+import ru.myspar.exception.NotFoundException;
 import ru.myspar.model.User;
-import ru.myspar.repository.DishRepository;
 import ru.myspar.repository.UserRepository;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Transactional
@@ -21,8 +19,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto createUser(UserCreationDto userCreationDto) {
-        User user = userRepository.save(UserDtoMapper.toUser(userCreationDto));
-        return UserDtoMapper.toUserDto(user);
+        User user = UserDtoMapper.toUser(userCreationDto);
+        user.updateDailyCaloriesNorm();
+        User saved = userRepository.save(user);
+        return UserDtoMapper.toUserDto(saved);
     }
 
     @Override
@@ -38,11 +38,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean deleteUser(Integer id) {
+    public void deleteUser(Integer id) {
         if (!userRepository.existsById(id)) {
-            return false;
+            throw new NotFoundException("Пользователь с id: " + id + " не найден.");
         }
         userRepository.deleteById(id);
-        return !userRepository.existsById(id);
     }
 }

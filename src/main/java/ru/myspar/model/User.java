@@ -5,8 +5,6 @@ import lombok.*;
 import ru.myspar.enums.Gender;
 import ru.myspar.enums.Goal;
 
-import java.util.Objects;
-
 @Table(name = "users")
 @Entity
 @Getter
@@ -46,21 +44,20 @@ public class User {
 
     @Setter
     @Column(name = "daily_calories_norm")
-    private double dailyCaloriesNorm;
+    private int dailyCaloriesNorm;
 
-    public double calculateDailyCaloriesNorm() {
+    public Integer calculateDailyCaloriesNorm() {
         double CaloriesNorm;
-        if (this.gender == Gender.MALE) { // Предполагаем, что Gender - это enum с константой MALE
+        if (this.gender == Gender.MALE) {
             CaloriesNorm = 88.362 + (13.397 * this.weight) + (4.799 * this.height) - (5.677 * this.age);
         } else {
             CaloriesNorm = 447.593 + (9.247 * this.weight) + (3.098 * this.height) - (4.330 * this.age);
         }
 
-        return CaloriesNorm;
+        return (int) Math.round(CaloriesNorm);
     }
 
-    public void updateDailyCaloriesNorm(){
+    public void updateDailyCaloriesNorm() {
         this.dailyCaloriesNorm = calculateDailyCaloriesNorm();
     }
-
 }

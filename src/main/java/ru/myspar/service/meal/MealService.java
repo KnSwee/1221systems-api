@@ -7,11 +7,11 @@ import ru.myspar.dto.meal.MealDto;
 import java.util.List;
 
 public interface MealService {
-    MealDto createMeal(@Valid MealCreationDto mealCreationDto, Integer userId);
+    MealDto createMeal(@Valid MealCreationDto mealCreationDto);
 
-    List<MealDto> getMealsById(Integer userId);
+    List<MealDto> getMealsByUserId(Integer userId);
 
     MealDto getMealById(Integer mealId);
 
-    boolean deleteMealById(Integer mealId);
+    void deleteMealById(Integer mealId);
 }

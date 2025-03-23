@@ -11,5 +11,7 @@ public interface DishService {
 
     List<DishDto> getDishes();
 
-    boolean deleteDish(int id);
+    void deleteDish(int id);
+
+    DishDto getDishById(int id);
 }

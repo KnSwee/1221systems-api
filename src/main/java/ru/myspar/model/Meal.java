@@ -32,5 +32,4 @@ public class Meal {
             inverseJoinColumns = @JoinColumn(name = "dish_id")
     )
     private List<Dish> dishes;
-
 }
