@@ -30,7 +30,7 @@ public class DishServiceImpl implements DishService {
 
     @Override
     public DishDto getDishById(int id) {
-        Dish dish = dishRepository.findById(id).orElseThrow(() -> new NotFoundException("Блюда с id " + id + "не существует"));
+        Dish dish = dishRepository.findById(id).orElseThrow(() -> new NotFoundException("Блюда с id " + id + " не существует"));
         return DishDtoMapper.toDishDto(dish);
     }
 

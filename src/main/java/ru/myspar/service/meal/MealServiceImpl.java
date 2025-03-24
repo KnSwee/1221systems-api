@@ -23,7 +23,7 @@ public class MealServiceImpl implements MealService {
     private final DishRepository dishRepository;
     private final UserRepository userRepository;
 
-
+    @Override
     public MealDto createMeal(MealCreationDto mealCreationDto) {
         User user = userRepository.findById(mealCreationDto.getUserId())
                 .orElseThrow(() -> new NotFoundException("Пользователь с id: " + mealCreationDto.getUserId() + " не найден."));

@@ -16,7 +16,7 @@ import java.time.LocalDate;
 @RequiredArgsConstructor
 public class ReportController {
 
-    private ReportService reportService;
+    private final ReportService reportService;
 
     @GetMapping("/daily/{userId}")
     public ResponseEntity<DailyReportDto> getDailyReport(@PathVariable(name = "userId") Integer userId) {

@@ -15,19 +15,30 @@ import java.util.Map;
 @RestControllerAdvice
 public class ErrorHandler {
 
+    @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler
     public ErrorResponse handleNotFoundException(final NotFoundException ex) {
         log.error("404 NOT_FOUND {}", ex.getMessage());
         return new ErrorResponse(HttpStatus.NOT_FOUND.toString(),
-                "Element not found in Database",
+                "Элемент не найден",
                 ex.getMessage());
     }
 
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler
     public ErrorResponse handleBadRequestException(final BadRequestException ex) {
         log.error("400 BAD_REQUEST {}", ex.getMessage());
         return new ErrorResponse(HttpStatus.BAD_REQUEST.toString(),
-                "Bad request",
+                "Некорректный запрос",
+                ex.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.CONFLICT)
+    @ExceptionHandler(DuplicateEmailException.class)
+    public ErrorResponse handleDuplicateEmailException(final DuplicateEmailException ex) {
+        log.error("409 CONFLICT {}", ex.getMessage());
+        return new ErrorResponse(HttpStatus.CONFLICT.toString(),
+                "Такой email уже зарегистрирован",
                 ex.getMessage());
     }
 
@@ -40,7 +51,7 @@ public class ErrorHandler {
 
         ValidationErrorResponse response = new ValidationErrorResponse(
                 HttpStatus.BAD_REQUEST.toString(),
-                "Validation failed",
+                "Валидация входных данных не пройдена",
                 errors
         );
 

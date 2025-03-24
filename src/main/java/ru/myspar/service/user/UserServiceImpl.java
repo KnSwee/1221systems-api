@@ -1,10 +1,12 @@
 package ru.myspar.service.user;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.myspar.dto.user.UserCreationDto;
 import ru.myspar.dto.user.UserDto;
+import ru.myspar.exception.DuplicateEmailException;
 import ru.myspar.exception.NotFoundException;
 import ru.myspar.model.User;
 import ru.myspar.repository.UserRepository;
@@ -21,8 +23,13 @@ public class UserServiceImpl implements UserService {
     public UserDto createUser(UserCreationDto userCreationDto) {
         User user = UserDtoMapper.toUser(userCreationDto);
         user.updateDailyCaloriesNorm();
-        User saved = userRepository.save(user);
-        return UserDtoMapper.toUserDto(saved);
+
+        try {
+            User saved = userRepository.save(user);
+            return UserDtoMapper.toUserDto(saved);
+        } catch (DataIntegrityViolationException e) {
+            throw new DuplicateEmailException("Email адрес уже зарегистрирован: " + userCreationDto.getEmail());
+        }
     }
 
     @Override
