@@ -1,0 +1,2050 @@
+{
+	"info": {
+		"_postman_id": "8478f1a4-4fb6-4897-a328-1a545e9f89e6",
+		"name": "1221SystemsApp API Tests",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "37555251"
+	},
+	"item": [
+		{
+			"name": "user",
+			"item": [
+				{
+					"name": "createUser",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"\r",
+									"function generateRandomString(length) {\r",
+									"    let result = '';\r",
+									"    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';\r",
+									"    const charactersLength = characters.length;\r",
+									"    for (let i = 0; i < length; i++) {\r",
+									"        result += characters.charAt(Math.floor(Math.random() * charactersLength));\r",
+									"    }\r",
+									"    return result;\r",
+									"}\r",
+									"\r",
+									"const randomString = generateRandomString(10); \r",
+									"\r",
+									"const email = `test_${randomString}@example.com`; \r",
+									"\r",
+									"pm.environment.set(\"random_email\", email);\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Create User - Success\", function () {\r",
+									"    pm.test(\"Status code is 201\", function () {\r",
+									"        pm.response.to.have.status(201);\r",
+									"    });\r",
+									"\r",
+									"    pm.test(\"Content-Type is application/json\", function () {\r",
+									"        pm.response.to.have.header(\"Content-Type\", \"application/json\");\r",
+									"    });\r",
+									"\r",
+									"    pm.test(\"Response has id\", function () {\r",
+									"            var jsonData = pm.response.json();\r",
+									"            console.log(\"jsonData.id (Create User):\", jsonData.id);\r",
+									"            pm.expect(jsonData.id).to.be.a('number');\r",
+									"            pm.environment.set(\"userId\", jsonData.id);\r",
+									"            console.log(\"userId set to (Create User):\", pm.environment.get(\"userId\"));\r",
+									"        });\r",
+									"\r",
+									"    pm.test(\"Name is correct\", function () {\r",
+									"        var jsonData = pm.response.json();\r",
+									"        pm.expect(jsonData.name).to.eql(\"Valid User\");\r",
+									"    });\r",
+									"\r",
+									"   pm.test(\"Email is present in response body\", () => {\r",
+									"       const responseJson = pm.response.json();\r",
+									"       const expectedEmail = pm.environment.get(\"random_email\");\r",
+									"\r",
+									"       pm.expect(responseJson.email).to.eql(expectedEmail); \r",
+									"   });\r",
+									"\r",
+									"\r",
+									"    pm.test(\"Age is correct\", function () {\r",
+									"        var jsonData = pm.response.json();\r",
+									"        pm.expect(jsonData.age).to.eql(30);\r",
+									"    });\r",
+									"\r",
+									"    pm.test(\"Weight is correct\", function () {\r",
+									"        var jsonData = pm.response.json();\r",
+									"        pm.expect(jsonData.weight).to.eql(75.5);\r",
+									"    });\r",
+									"\r",
+									"    pm.test(\"Height is correct\", function () {\r",
+									"        var jsonData = pm.response.json();\r",
+									"        pm.expect(jsonData.height).to.eql(180.0);\r",
+									"    });\r",
+									"\r",
+									"    pm.test(\"Gender is correct\", function () {\r",
+									"        var jsonData = pm.response.json();\r",
+									"        pm.expect(jsonData.gender).to.eql(\"Мужской\");\r",
+									"    });\r",
+									"\r",
+									"    pm.test(\"Goal is correct\", function () {\r",
+									"        var jsonData = pm.response.json();\r",
+									"        pm.expect(jsonData.goal).to.eql(\"Похудение\");\r",
+									"    });\r",
+									"\r",
+									"    pm.test(\"Daily Calories Norm is a number\", function () {\r",
+									"        var jsonData = pm.response.json();\r",
+									"        pm.expect(jsonData.dailyCaloriesNorm).to.be.a('number');\r",
+									"    });\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"Valid User\",\r\n  \"email\": \"{{random_email}}\",\r\n  \"age\": 30,\r\n  \"weight\": 75.5,\r\n  \"height\": 180.0,\r\n  \"gender\": \"MALE\",\r\n  \"goal\": \"WEIGHT_LOSS\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/users",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "createUser - invalid email",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response is JSON\", function () {\r",
+									"    pm.response.to.have.header(\"Content-Type\", \"application/json\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response contains validation error\", function () {\r",
+									"  var jsonData = pm.response.json();\r",
+									"  pm.expect(jsonData).to.have.property('errors');\r",
+									"  pm.expect(jsonData.errors.email).to.include('Email введен некорректно.');\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"Invalid Email User\",\r\n  \"email\": \"invalid_email\",\r\n  \"age\": 30,\r\n  \"weight\": 75.5,\r\n  \"height\": 180.0,\r\n  \"gender\": \"MALE\",\r\n  \"goal\": \"WEIGHT_LOSS\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/users",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "createUser - invalid name",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response is JSON\", function () {\r",
+									"    pm.response.to.have.header(\"Content-Type\", \"application/json\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response contains validation error\", function () {\r",
+									"  var jsonData = pm.response.json();\r",
+									"  pm.expect(jsonData).to.have.property('errors');\r",
+									"  pm.expect(jsonData.errors.name).to.include('Длина имени должна быть от 2 до 250 символов.');\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"a\",\r\n  \"email\": \"valid@example.com\",\r\n  \"age\": 30,\r\n  \"weight\": 75.5,\r\n  \"height\": 180.0,\r\n  \"gender\": \"MALE\",\r\n  \"goal\": \"WEIGHT_LOSS\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/users",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "createUser - invalid age",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response is JSON\", function () {\r",
+									"    pm.response.to.have.header(\"Content-Type\", \"application/json\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response contains validation error\", function () {\r",
+									"  var jsonData = pm.response.json();\r",
+									"  pm.expect(jsonData).to.have.property('errors');\r",
+									"  pm.expect(jsonData.errors.age).to.include('Возраст должен быть больше или равен 0 (полных лет).');\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"Valid User\",\r\n  \"email\": \"valid@example.com\",\r\n  \"age\": -1,\r\n  \"weight\": 75.5,\r\n  \"height\": 180.0,\r\n  \"gender\": \"MALE\",\r\n  \"goal\": \"WEIGHT_LOSS\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/users",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "createUser - invalid weight height",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response is JSON\", function () {\r",
+									"    pm.response.to.have.header(\"Content-Type\", \"application/json\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response contains validation error\", function () {\r",
+									"  var jsonData = pm.response.json();\r",
+									"  pm.expect(jsonData).to.have.property('errors');\r",
+									"  pm.expect(jsonData.errors.weight).to.include('Вес не может быть больше 600 кг.');\r",
+									"  pm.expect(jsonData.errors.height).to.include('Рост не может быть меньше 62,8 см.');\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"Valid User\",\r\n  \"email\": \"valid@example.com\",\r\n  \"age\": 1,\r\n  \"weight\": 610.5,\r\n  \"height\": 10.0,\r\n  \"gender\": \"MALE\",\r\n  \"goal\": \"WEIGHT_LOSS\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/users",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getUsers",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Content-Type is application/json\", function () {\r",
+									"    pm.response.to.have.header(\"Content-Type\", \"application/json\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response is an array\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.be.an('array');\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/users",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getUserById",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/users/:userId",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users",
+								":userId"
+							],
+							"variable": [
+								{
+									"key": "userId",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getUserById - Not found",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 404\", function () {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/users/99999",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users",
+								"99999"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteUser",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 204\", function () {\r",
+									"    pm.response.to.have.status(204);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Body is empty\", function () {\r",
+									"    pm.expect(pm.response.text()).to.eql(\"\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/users/{{userId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users",
+								"{{userId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteUser - Not found",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 404\", function () {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/users/99999",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users",
+								"99999"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "dish",
+			"item": [
+				{
+					"name": "createDish",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"pm.test(\"Content-Type is application/json\", function () {",
+									"    pm.response.to.have.header(\"Content-Type\", \"application/json\");",
+									"});",
+									"",
+									"pm.test(\"Response has id\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.id).to.be.a('number');",
+									"    pm.environment.set(\"dishId\", jsonData.id);",
+									"});",
+									"",
+									"pm.test(\"Name is correct\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.name).to.eql(\"Test Dish\");",
+									"});",
+									"",
+									"pm.test(\"Calories is correct\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.calories).to.eql(500);",
+									"});",
+									"",
+									"pm.test(\"Proteins is correct\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.proteins).to.eql(25.5);",
+									"});",
+									"",
+									"pm.test(\"Fats is correct\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.fats).to.eql(15.2);",
+									"});",
+									"",
+									"pm.test(\"Carbohydrates is correct\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.carbohydrates).to.eql(60.3);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Test Dish\",\n    \"calories\": 500,\n    \"proteins\": 25.5,\n    \"fats\": 15.2,\n    \"carbohydrates\": 60.3\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/dishes",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"dishes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "createDish - Invalid Name",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									"pm.test(\"Response is JSON\", function () {",
+									"    pm.response.to.have.header(\"Content-Type\", \"application/json\");",
+									"});",
+									"",
+									"pm.test(\"Response contains validation error\", function () {",
+									"  var jsonData = pm.response.json();",
+									"  pm.expect(jsonData).to.have.property('errors');",
+									"  pm.expect(jsonData.errors).to.have.property('name');",
+									"  pm.expect(jsonData.errors.name).to.include('Длина названия должна быть от 2 до 250 символов.');",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"a\",\n    \"calories\": 500,\n    \"proteins\": 25.5,\n    \"fats\": 15.2,\n    \"carbohydrates\": 60.3\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/dishes",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"dishes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getDishes",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Content-Type is application/json\", function () {",
+									"    pm.response.to.have.header(\"Content-Type\", \"application/json\");",
+									"});",
+									"",
+									"pm.test(\"Response is an array\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.be.an('array');",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/dishes",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"dishes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getDishByID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Content-Type is application/json\", function () {",
+									"    pm.response.to.have.header(\"Content-Type\", \"application/json\");",
+									"});",
+									"",
+									"pm.test(\"Dish ID is correct\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.id).to.eql(parseInt(pm.environment.get(\"dishId\")));",
+									"});",
+									"",
+									"pm.test(\"Name is correct\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.name).to.eql(\"Test Dish\");",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/dishes/{{dishId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"dishes",
+								"{{dishId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getDishByID - Not Found",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 404\", function () {",
+									"    pm.response.to.have.status(404);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/dishes/99999",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"dishes",
+								"99999"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteDish",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 204\", function () {",
+									"    pm.response.to.have.status(204);",
+									"});",
+									"",
+									"pm.test(\"Body is empty\", function () {",
+									"    pm.expect(pm.response.text()).to.eql(\"\");",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/dishes/{{dishId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"dishes",
+								"{{dishId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteDish - Not Found",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 404\", function () {",
+									"    pm.response.to.have.status(404);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/dishes/99999",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"dishes",
+								"99999"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "meal",
+			"item": [
+				{
+					"name": "createMeal",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", () => {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"pm.test(\"Response time is less than 200ms\", () => {",
+									"  pm.expect(pm.response.responseTime).to.be.below(200);",
+									"});",
+									"",
+									"pm.test(\"Content-Type is application/json\", () => {",
+									"  pm.response.to.have.header(\"Content-Type\", \"application/json\");",
+									"});",
+									"",
+									"pm.test(\"Response has id\", () => {",
+									"    const responseJson = pm.response.json();",
+									"    pm.expect(responseJson).to.have.property('id');",
+									"    pm.environment.set(\"mealId\", responseJson.id); // Save meal ID for future requests",
+									"});",
+									"",
+									"pm.test(\"Response userId matches request\", () => {",
+									"    const responseJson = pm.response.json();",
+									"    pm.expect(responseJson.userId).to.eql(parseInt(pm.environment.get(\"userId\")));",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"   const createDishUrl = 'http://localhost:8080/dishes';\r",
+									"   const createUserUrl = 'http://localhost:8080/users';\r",
+									"   const timeout = 150;\r",
+									"   const userData = {\r",
+									"       name: 'Test user',\r",
+									"       email: 'test.user' + Math.random() + '@example.com',\r",
+									"       age: 30,\r",
+									"       weight: 70.0,\r",
+									"       height: 175.0,\r",
+									"       goal: 'WEIGHT_LOSS',\r",
+									"       gender: 'MALE'\r",
+									"   };\r",
+									"   const dishData = {\r",
+									"       name: 'Test Dish',\r",
+									"       calories: 500,\r",
+									"       proteins: 25.5,\r",
+									"       fats: 15.2,\r",
+									"       carbohydrates: 60.3\r",
+									"   };\r",
+									"   const dishData2 = {\r",
+									"       name: 'Test Dish2',\r",
+									"       calories: 300,\r",
+									"       proteins: 15.5,\r",
+									"       fats: 25.2,\r",
+									"       carbohydrates: 30.3\r",
+									"   };\r",
+									"\r",
+									"   let userId, dishId, dishId2;\r",
+									"\r",
+									"   pm.sendRequest({\r",
+									"       url: createUserUrl,\r",
+									"       method: 'POST',\r",
+									"       header: { 'Content-Type': 'application/json' },\r",
+									"       body: { mode: 'raw', raw: JSON.stringify(userData) }\r",
+									"   }, function (err, response) {\r",
+									"       if (err) {\r",
+									"           console.error(err);\r",
+									"           pm.test('Ошибка при создании пользователя', () => pm.expect.fail('Не удалось создать пользователя: ' + err));\r",
+									"       } else {\r",
+									"           const user = response.json();\r",
+									"           userId = user.id;\r",
+									"           pm.environment.set(\"userId\", userId);\r",
+									"           console.log('Пользователь создан, ID:', userId);\r",
+									"       }\r",
+									"   });\r",
+									"\r",
+									"   setTimeout(function() {\r",
+									"       pm.sendRequest({\r",
+									"           url: createDishUrl,\r",
+									"           method: 'POST',\r",
+									"           header: { 'Content-Type': 'application/json' },\r",
+									"           body: { mode: 'raw', raw: JSON.stringify(dishData) }\r",
+									"       }, function (err, response) {\r",
+									"           if (err) {\r",
+									"               console.error(err);\r",
+									"               pm.test('Ошибка при создании блюда 1', () => pm.expect.fail('Не удалось создать блюдо 1: ' + err));\r",
+									"           } else {\r",
+									"               const dish = response.json();\r",
+									"               dishId = dish.id;\r",
+									"               pm.environment.set(\"dishId\", dishId);\r",
+									"               console.log('Блюдо 1 создано, ID:', dishId);\r",
+									"           }\r",
+									"       });\r",
+									"   }, timeout);\r",
+									"\r",
+									"   setTimeout(function() {\r",
+									"       pm.sendRequest({\r",
+									"           url: createDishUrl,\r",
+									"           method: 'POST',\r",
+									"           header: { 'Content-Type': 'application/json' },\r",
+									"           body: { mode: 'raw', raw: JSON.stringify(dishData2) }\r",
+									"       }, function (err, response) {\r",
+									"           if (err) {\r",
+									"               console.error(err);\r",
+									"               pm.test('Ошибка при создании блюда 2', () => pm.expect.fail('Не удалось создать блюдо 2: ' + err));\r",
+									"           } else {\r",
+									"               const dish2 = response.json();\r",
+									"               dishId2 = dish2.id;\r",
+									"               pm.environment.set(\"dishId2\", dishId2);\r",
+									"               console.log('Блюдо 2 создано, ID:', dishId2);\r",
+									"           }\r",
+									"       });\r",
+									"   }, timeout * 2);\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"userId\": {{userId}},\n    \"mealDateTime\": \"2024-10-27T12:00:00\",\n    \"dishIds\": [\n        {{dishId}},\n        {{dishId2}}\n    ]\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/meals",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"meals"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getMealsByUserID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", () => {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Content-Type is application/json\", () => {",
+									"  pm.response.to.have.header(\"Content-Type\", \"application/json\");",
+									"});",
+									"",
+									"pm.test(\"Response is an array\", () => {",
+									"    const responseJson = pm.response.json();",
+									"    pm.expect(responseJson).to.be.an('array');",
+									"});",
+									"",
+									"pm.test(\"Each meal in the array has userId matching the request\", () => {",
+									"    const responseJson = pm.response.json();",
+									"    responseJson.forEach(meal => {",
+									"        pm.expect(meal.userId).to.eql(parseInt(pm.environment.get(\"userId\")));",
+									"    });",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-User-Id",
+								"value": "{{userId}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/meals",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"meals"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getMealByID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", () => {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Content-Type is application/json\", () => {",
+									"  pm.response.to.have.header(\"Content-Type\", \"application/json\");",
+									"});",
+									"",
+									"pm.test(\"Response has correct id\", () => {",
+									"    const responseJson = pm.response.json();",
+									"    pm.expect(responseJson.id).to.eql(parseInt(pm.environment.get(\"mealId\")));",
+									"});",
+									"",
+									"pm.test(\"Response has correct userId\", () => {",
+									"    const responseJson = pm.response.json();",
+									"    pm.expect(responseJson.userId).to.eql(parseInt(pm.environment.get(\"userId\")));",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/meals/{{mealId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"meals",
+								"{{mealId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteMealByID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 204\", () => {",
+									"    pm.response.to.have.status(204);",
+									"});",
+									"",
+									"pm.test(\"No Content in response\", () => {",
+									"   pm.expect(pm.response.text()).to.be.empty;",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/meals/{{mealId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"meals",
+								"{{mealId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getMealById - Not Found",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 404\", () => {",
+									"    pm.response.to.have.status(404);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/meals/{{mealId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"meals",
+								"{{mealId}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "report",
+			"item": [
+				{
+					"name": "createMeal ForReportTest",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", () => {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"pm.test(\"Response time is less than 200ms\", () => {",
+									"  pm.expect(pm.response.responseTime).to.be.below(200);",
+									"});",
+									"",
+									"pm.test(\"Content-Type is application/json\", () => {",
+									"  pm.response.to.have.header(\"Content-Type\", \"application/json\");",
+									"});",
+									"",
+									"pm.test(\"Response has id\", () => {",
+									"    const responseJson = pm.response.json();",
+									"    pm.expect(responseJson).to.have.property('id');",
+									"    pm.environment.set(\"mealId\", responseJson.id); // Save meal ID for future requests",
+									"});",
+									"",
+									"pm.test(\"Response userId matches request\", () => {",
+									"    const responseJson = pm.response.json();",
+									"    pm.expect(responseJson.userId).to.eql(parseInt(pm.environment.get(\"userId\")));",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const createDishUrl = 'http://localhost:8080/dishes';\r",
+									"const createUserUrl = 'http://localhost:8080/users';\r",
+									"const now = new Date();\r",
+									"    const isoString = now.toISOString().slice(0, 19);\r",
+									"    pm.environment.set(\"iso_timestamp\", isoString);\r",
+									"\r",
+									"const userData = {\r",
+									"    name: 'Test user',\r",
+									"    email: 'test.user' + Math.random() + '@example.com', \r",
+									"    age: 30,\r",
+									"    weight: 70.0,\r",
+									"    height: 175.0,\r",
+									"    goal: 'WEIGHT_LOSS',\r",
+									"    gender: 'MALE'\r",
+									"};\r",
+									"const dishData = {\r",
+									"    name: 'Test Dish',\r",
+									"    calories: 500,\r",
+									"    proteins: 25.5,\r",
+									"    fats: 15.2,\r",
+									"    carbohydrates: 60.3\r",
+									"};\r",
+									"const dishData2 = {\r",
+									"    name: 'Test Dish2',\r",
+									"    calories: 300,\r",
+									"    proteins: 15.5,\r",
+									"    fats: 25.2,\r",
+									"    carbohydrates: 30.3\r",
+									"};\r",
+									"\r",
+									"\r",
+									"pm.sendRequest({\r",
+									"    url: createUserUrl,\r",
+									"    method: 'POST',\r",
+									"    header: {\r",
+									"        'Content-Type': 'application/json'\r",
+									"    },\r",
+									"    body: {\r",
+									"        mode: 'raw',\r",
+									"        raw: JSON.stringify(userData)\r",
+									"    }\r",
+									"}, function (err, response) {\r",
+									"    if (err) {\r",
+									"        console.error(err);\r",
+									"        pm.test('Ошибка при создании пользователя в pre-request script', () => {\r",
+									"            pm.expect.fail('Не удалось создать пользователя: ' + err);\r",
+									"        });\r",
+									"    } else {\r",
+									"        const responseJson = response.json();\r",
+									"        const userId = responseJson.id;\r",
+									"\r",
+									"        pm.environment.set('userId', userId);\r",
+									"\r",
+									"        console.log('Пользователь успешно создан. ID:', userId);\r",
+									"        pm.test('Пользователь успешно создан в pre-request script', () => {\r",
+									"            pm.expect(response.code).to.eql(201);\r",
+									"        });\r",
+									"    }\r",
+									"});\r",
+									"\r",
+									"pm.sendRequest({\r",
+									"    url: createDishUrl,\r",
+									"    method: 'POST',\r",
+									"    header: {\r",
+									"        'Content-Type': 'application/json'\r",
+									"    },\r",
+									"    body: {\r",
+									"        mode: 'raw',\r",
+									"        raw: JSON.stringify(dishData)\r",
+									"    }\r",
+									"}, function (err, response) {\r",
+									"    if (err) {\r",
+									"        console.error(err);\r",
+									"        pm.test('Ошибка при создании блюда в pre-request script', () => {\r",
+									"            pm.expect.fail('Не удалось создать блюдо: ' + err);\r",
+									"        });\r",
+									"    } else {\r",
+									"        const responseJson = response.json();\r",
+									"        const dishId = responseJson.id;\r",
+									"\r",
+									"        pm.environment.set('dishId', dishId);\r",
+									"\r",
+									"        console.log('Блюдо успешно создано. ID:', dishId);\r",
+									"         pm.test('Блюдо успешно создано в pre-request script', () => {\r",
+									"           pm.expect(response.code).to.eql(201);\r",
+									"        });\r",
+									"    }\r",
+									"});\r",
+									"\r",
+									"pm.sendRequest({\r",
+									"    url: createDishUrl,\r",
+									"    method: 'POST',\r",
+									"    header: {\r",
+									"        'Content-Type': 'application/json'\r",
+									"    },\r",
+									"    body: {\r",
+									"        mode: 'raw',\r",
+									"        raw: JSON.stringify(dishData2)\r",
+									"    }\r",
+									"}, function (err, response) {\r",
+									"    if (err) {\r",
+									"        console.error(err);\r",
+									"        pm.test('Ошибка при создании блюда в pre-request script', () => {\r",
+									"            pm.expect.fail('Не удалось создать блюдо: ' + err);\r",
+									"        });\r",
+									"    } else {\r",
+									"        const responseJson = response.json();\r",
+									"        const dishId = responseJson.id;\r",
+									"\r",
+									"        pm.environment.set('dishId2', dishId);\r",
+									"\r",
+									"        console.log('Блюдо успешно создано. ID:', dishId);\r",
+									"         pm.test('Блюдо успешно создано в pre-request script', () => {\r",
+									"           pm.expect(response.code).to.eql(201);\r",
+									"        });\r",
+									"    }\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"userId\": {{userId}},\n    \"mealDateTime\": \"{{iso_timestamp}}\",\n    \"dishIds\": [\n        {{dishId}},\n        {{dishId2}}\n    ]\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/meals",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"meals"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "createMeal2 ForReportTest",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", () => {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"pm.test(\"Response time is less than 200ms\", () => {",
+									"  pm.expect(pm.response.responseTime).to.be.below(200);",
+									"});",
+									"",
+									"pm.test(\"Content-Type is application/json\", () => {",
+									"  pm.response.to.have.header(\"Content-Type\", \"application/json\");",
+									"});",
+									"",
+									"pm.test(\"Response has id\", () => {",
+									"    const responseJson = pm.response.json();",
+									"    pm.expect(responseJson).to.have.property('id');",
+									"    pm.environment.set(\"mealId\", responseJson.id); // Save meal ID for future requests",
+									"});",
+									"",
+									"pm.test(\"Response userId matches request\", () => {",
+									"    const responseJson = pm.response.json();",
+									"    pm.expect(responseJson.userId).to.eql(parseInt(pm.environment.get(\"userId\")));",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const createDishUrl = 'http://localhost:8080/dishes';\r",
+									"\r",
+									"const dishData = {\r",
+									"    name: 'Test Dish',\r",
+									"    calories: 100,\r",
+									"    proteins: 1.5,\r",
+									"    fats: 1.2,\r",
+									"    carbohydrates: 6.3\r",
+									"};\r",
+									"const dishData2 = {\r",
+									"    name: 'Test Dish2',\r",
+									"    calories: 200,\r",
+									"    proteins: 10.5,\r",
+									"    fats: 15.2,\r",
+									"    carbohydrates: 20.0\r",
+									"};\r",
+									"\r",
+									"pm.sendRequest({\r",
+									"    url: createDishUrl,\r",
+									"    method: 'POST',\r",
+									"    header: {\r",
+									"        'Content-Type': 'application/json'\r",
+									"    },\r",
+									"    body: {\r",
+									"        mode: 'raw',\r",
+									"        raw: JSON.stringify(dishData)\r",
+									"    }\r",
+									"}, function (err, response) {\r",
+									"    if (err) {\r",
+									"        console.error(err);\r",
+									"        pm.test('Ошибка при создании блюда в pre-request script', () => {\r",
+									"            pm.expect.fail('Не удалось создать блюдо: ' + err);\r",
+									"        });\r",
+									"    } else {\r",
+									"        const responseJson = response.json();\r",
+									"        const dishId = responseJson.id;\r",
+									"\r",
+									"        pm.environment.set('dishId', dishId);\r",
+									"\r",
+									"        console.log('Блюдо успешно создано. ID:', dishId);\r",
+									"         pm.test('Блюдо успешно создано в pre-request script', () => {\r",
+									"           pm.expect(response.code).to.eql(201);\r",
+									"        });\r",
+									"    }\r",
+									"});\r",
+									"\r",
+									"pm.sendRequest({\r",
+									"    url: createDishUrl,\r",
+									"    method: 'POST',\r",
+									"    header: {\r",
+									"        'Content-Type': 'application/json'\r",
+									"    },\r",
+									"    body: {\r",
+									"        mode: 'raw',\r",
+									"        raw: JSON.stringify(dishData2)\r",
+									"    }\r",
+									"}, function (err, response) {\r",
+									"    if (err) {\r",
+									"        console.error(err);\r",
+									"        pm.test('Ошибка при создании блюда в pre-request script', () => {\r",
+									"            pm.expect.fail('Не удалось создать блюдо: ' + err);\r",
+									"        });\r",
+									"    } else {\r",
+									"        const responseJson = response.json();\r",
+									"        const dishId = responseJson.id;\r",
+									"\r",
+									"        pm.environment.set('dishId2', dishId);\r",
+									"\r",
+									"        console.log('Блюдо успешно создано. ID:', dishId);\r",
+									"         pm.test('Блюдо успешно создано в pre-request script', () => {\r",
+									"           pm.expect(response.code).to.eql(201);\r",
+									"        });\r",
+									"    }\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"userId\": {{userId}},\n    \"mealDateTime\": \"{{iso_timestamp}}\",\n    \"dishIds\": [\n        {{dishId}},\n        {{dishId2}}\n    ]\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/meals",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"meals"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "createMeal3 ForReportTest",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", () => {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"pm.test(\"Response time is less than 200ms\", () => {",
+									"  pm.expect(pm.response.responseTime).to.be.below(200);",
+									"});",
+									"",
+									"pm.test(\"Content-Type is application/json\", () => {",
+									"  pm.response.to.have.header(\"Content-Type\", \"application/json\");",
+									"});",
+									"",
+									"pm.test(\"Response has id\", () => {",
+									"    const responseJson = pm.response.json();",
+									"    pm.expect(responseJson).to.have.property('id');",
+									"    pm.environment.set(\"mealId\", responseJson.id); // Save meal ID for future requests",
+									"});",
+									"",
+									"pm.test(\"Response userId matches request\", () => {",
+									"    const responseJson = pm.response.json();",
+									"    pm.expect(responseJson.userId).to.eql(parseInt(pm.environment.get(\"userId\")));",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const createDishUrl = 'http://localhost:8080/dishes';\r",
+									"const now = new Date();\r",
+									"const isoStringNow = now.toISOString().slice(0, 19);\r",
+									"pm.environment.set(\"iso_timestamp_now\", isoStringNow);\r",
+									"\r",
+									"const yesterday = new Date(now);\r",
+									"yesterday.setDate(now.getDate() - 1);\r",
+									"\r",
+									"const year = yesterday.getFullYear();\r",
+									"const month = String(yesterday.getMonth() + 1).padStart(2, '0');\r",
+									"const day = String(yesterday.getDate()).padStart(2, '0');\r",
+									"const hours = String(yesterday.getHours()).padStart(2, '0');\r",
+									"const minutes = String(yesterday.getMinutes()).padStart(2, '0');\r",
+									"const seconds = String(yesterday.getSeconds()).padStart(2, '0');\r",
+									"\r",
+									"const isoStringYesterday = `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;\r",
+									"\r",
+									"pm.environment.set(\"yesterday_iso\", isoStringYesterday);\r",
+									"\r",
+									"\r",
+									"const dishData = {\r",
+									"    name: 'Test Dish',\r",
+									"    calories: 100,\r",
+									"    proteins: 1.5,\r",
+									"    fats: 1.2,\r",
+									"    carbohydrates: 6.3\r",
+									"};\r",
+									"const dishData2 = {\r",
+									"    name: 'Test Dish2',\r",
+									"    calories: 200,\r",
+									"    proteins: 10.5,\r",
+									"    fats: 15.2,\r",
+									"    carbohydrates: 20.0\r",
+									"};\r",
+									"\r",
+									"pm.sendRequest({\r",
+									"    url: createDishUrl,\r",
+									"    method: 'POST',\r",
+									"    header: {\r",
+									"        'Content-Type': 'application/json'\r",
+									"    },\r",
+									"    body: {\r",
+									"        mode: 'raw',\r",
+									"        raw: JSON.stringify(dishData)\r",
+									"    }\r",
+									"}, function (err, response) {\r",
+									"    if (err) {\r",
+									"        console.error(err);\r",
+									"        pm.test('Ошибка при создании блюда в pre-request script', () => {\r",
+									"            pm.expect.fail('Не удалось создать блюдо: ' + err);\r",
+									"        });\r",
+									"    } else {\r",
+									"        const responseJson = response.json();\r",
+									"        const dishId = responseJson.id;\r",
+									"\r",
+									"        pm.environment.set('dishId', dishId);\r",
+									"\r",
+									"        console.log('Блюдо успешно создано. ID:', dishId);\r",
+									"         pm.test('Блюдо успешно создано в pre-request script', () => {\r",
+									"           pm.expect(response.code).to.eql(201);\r",
+									"        });\r",
+									"    }\r",
+									"});\r",
+									"\r",
+									"pm.sendRequest({\r",
+									"    url: createDishUrl,\r",
+									"    method: 'POST',\r",
+									"    header: {\r",
+									"        'Content-Type': 'application/json'\r",
+									"    },\r",
+									"    body: {\r",
+									"        mode: 'raw',\r",
+									"        raw: JSON.stringify(dishData2)\r",
+									"    }\r",
+									"}, function (err, response) {\r",
+									"    if (err) {\r",
+									"        console.error(err);\r",
+									"        pm.test('Ошибка при создании блюда в pre-request script', () => {\r",
+									"            pm.expect.fail('Не удалось создать блюдо: ' + err);\r",
+									"        });\r",
+									"    } else {\r",
+									"        const responseJson = response.json();\r",
+									"        const dishId = responseJson.id;\r",
+									"\r",
+									"        pm.environment.set('dishId2', dishId);\r",
+									"\r",
+									"        console.log('Блюдо успешно создано. ID:', dishId);\r",
+									"         pm.test('Блюдо успешно создано в pre-request script', () => {\r",
+									"           pm.expect(response.code).to.eql(201);\r",
+									"        });\r",
+									"    }\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"userId\": {{userId}},\n    \"mealDateTime\": \"{{yesterday_iso}}\",\n    \"dishIds\": [\n        {{dishId}},\n        {{dishId2}}\n    ]\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/meals",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"meals"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getDailyReport",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", () => {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response has required fields\", () => {",
+									"    const response = pm.response.json();",
+									"    pm.expect(response).to.have.property('userId');",
+									"    pm.expect(response).to.have.property('userName');",
+									"    pm.expect(response).to.have.property('reportDate');",
+									"    pm.expect(response).to.have.property('totalCalories');",
+									"    pm.expect(response).to.have.property('meals');",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/reports/daily/{{userId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"reports",
+								"daily",
+								"{{userId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getDailyReport - User Not Found",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 404\", () => {",
+									"    pm.response.to.have.status(404);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"packages": {},
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/reports/daily/999",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"reports",
+								"daily",
+								"999"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getComplianceReport",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", () => {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response has required fields\", () => {",
+									"    const response = pm.response.json();",
+									"    pm.expect(response).to.have.property('userId');",
+									"    pm.expect(response).to.have.property('userName');",
+									"    pm.expect(response).to.have.property('dailyCaloriesNorm');",
+									"    pm.expect(response).to.have.property('caloriesConsumed');",
+									"    pm.expect(response).to.have.property('compliant');",
+									"    pm.expect(response).to.have.property('caloriesOverUnder');",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/reports/compliance/{{userId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"reports",
+								"compliance",
+								"{{userId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getComplianceReport - User Not Found",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 404\", () => {",
+									"    pm.response.to.have.status(404);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/reports/compliance/999",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"reports",
+								"compliance",
+								"999"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getMealHistory",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", () => {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response has required fields\", () => {",
+									"    const response = pm.response.json();",
+									"    pm.expect(response).to.have.property('userId');",
+									"    pm.expect(response).to.have.property('userName');",
+									"    pm.expect(response).to.have.property('dailyReports');",
+									"});",
+									"",
+									"pm.test(\"Daily Reports is an object\", () => {",
+									"    const response = pm.response.json();",
+									"    pm.expect(response.dailyReports).to.be.an('object');",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/reports/history/{{userId}}?startDate=2025-03-24&endDate=2025-03-29",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"reports",
+								"history",
+								"{{userId}}"
+							],
+							"query": [
+								{
+									"key": "startDate",
+									"value": "2025-03-24"
+								},
+								{
+									"key": "endDate",
+									"value": "2025-03-29"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getMealHistory - Invalid Date Range",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", () => {",
+									"    pm.response.to.have.status(400);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/reports/history/{{userId}}?startDate=2023-01-05&endDate=2023-01-01",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"reports",
+								"history",
+								"{{userId}}"
+							],
+							"query": [
+								{
+									"key": "startDate",
+									"value": "2023-01-05"
+								},
+								{
+									"key": "endDate",
+									"value": "2023-01-01"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getMealHistory - User Not Found",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 404\", () => {",
+									"    pm.response.to.have.status(404);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/reports/history/999?startDate=2023-01-01&endDate=2023-01-05",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"reports",
+								"history",
+								"999"
+							],
+							"query": [
+								{
+									"key": "startDate",
+									"value": "2023-01-01"
+								},
+								{
+									"key": "endDate",
+									"value": "2023-01-05"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "userId",
+			"value": "1",
+			"type": "string"
+		},
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8080",
+			"type": "string"
+		},
+		{
+			"key": "dishId",
+			"value": "1",
+			"type": "string"
+		},
+		{
+			"key": "mealId",
+			"value": "1",
+			"type": "string"
+		}
+	]
+}
