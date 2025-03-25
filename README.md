@@ -33,7 +33,7 @@
 **2. Клонирование репозитория:**
 
   bash  
-  git clone   
+  git clone https://github.com/KnSwee/1221systems-api.git   
 
 
 **3. Запуск PostgreSQL:**
@@ -66,7 +66,7 @@ API будет доступно по адресу: http://localhost:8080
 
 **6. Тестирование:**
 
-Используйте предоставленную коллекцию Postman [postman/1221SystemsApp API Tests.postman_collection.json] для тестирования API.
+Используйте предоставленную коллекцию Postman [коллекцию Postman](postman/APITests.postman_collection.json) для тестирования API.
 
 
 ## Структура проекта:
@@ -90,4 +90,4 @@ API будет доступно по адресу: http://localhost:8080
 
 ## Postman коллекция:
 
-[]
+[postman/APITests.postman_collection.json](postman/APITests.postman_collection.json)
