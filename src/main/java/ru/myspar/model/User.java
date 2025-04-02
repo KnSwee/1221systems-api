@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import ru.myspar.enums.Gender;
 import ru.myspar.enums.Goal;
+import ru.myspar.enums.Role;
 
 @Table(name = "users")
 @Entity
@@ -22,6 +23,12 @@ public class User {
 
     @Column(name = "name")
     private String name;
+
+    @Column(name = "password")
+    private String password;
+
+    @Column(name = "role")
+    private Role role;
 
     @Column(name = "email")
     private String email;

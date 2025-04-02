@@ -12,31 +12,31 @@ import ru.myspar.service.user.UserService;
 import java.util.List;
 
 @RestController
-@RequestMapping(path = "/users")
+@RequestMapping
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
 
     @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping
+    @PostMapping("/users")
     public ResponseEntity<UserDto> createUser(@Valid @RequestBody UserCreationDto userCreationDto) {
         UserDto user = userService.createUser(userCreationDto);
         return new ResponseEntity<>(user, HttpStatus.CREATED);
     }
 
-    @GetMapping
+    @GetMapping("/users")
     public ResponseEntity<List<UserDto>> getUsers() {
         List<UserDto> users = userService.getUsers();
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
-    @GetMapping("/{userId}")
+    @GetMapping("/users/{userId}")
     public ResponseEntity<UserDto> getUser(@PathVariable(name = "userId") int id) {
         UserDto userById = userService.getUserById(id);
         return new ResponseEntity<>(userById, HttpStatus.OK);
     }
 
-    @DeleteMapping("/{userId}")
+    @DeleteMapping("/admin/users/{userId}")
     public ResponseEntity<Void> deleteUser(@PathVariable(name = "userId") int userId) {
         userService.deleteUser(userId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);

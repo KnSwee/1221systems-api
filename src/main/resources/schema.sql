@@ -2,6 +2,8 @@ CREATE TABLE IF NOT EXISTS users
 (
     id                  SERIAL PRIMARY KEY,
     name                VARCHAR(255),
+    password VARCHAR(20),
+    role VARCHAR(20),
     email               VARCHAR(255) UNIQUE,
     age                 INTEGER,
     weight              DECIMAL,
